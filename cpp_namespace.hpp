@@ -1,5 +1,5 @@
 #ifndef CPP_NAMESPACE_HPP
-#define CPP_NAMESPACE_Hpp
+#define CPP_NAMESPACE_HPP
 
 namespace cpplab {
     template<typename T, typename T2>
