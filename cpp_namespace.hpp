@@ -1,6 +1,10 @@
 #ifndef CPP_NAMESPACE_HPP
 #define CPP_NAMESPACE_HPP
 
+#include <thread>
+#include <mutex>
+#include <future>
+
 namespace cpplab {
     template<typename T, typename T2>
     auto add(const T &a, const T2 &b) -> decltype(a + b)
@@ -53,6 +57,17 @@ namespace cpplab {
         const std::lock_guard<std::mutex> lock(mx);
         std::cout << "Working on thread with id " << thread_id << '\n';
         std::cout << param << '\n';
+    }
+
+    void printAsyncInformation(std::string launch_info)
+    {
+        std::cout << "Launch type information: " << launch_info << '\n';
+    }
+
+    void async1(std::launch launch_info)
+    {
+        // if (launch_info)
+        // std::async(std::launch::async, printAsyncIn formation, launch_info);
     }
 
 }
