@@ -9,6 +9,7 @@
 #include "vector.hpp"
 #include "unique_ptr.hpp"
 #include "thread_pool.hpp"
+#include "non0_ptr.hpp"
 
 #include "FuelTank.hpp"
 #include "Engine.hpp"

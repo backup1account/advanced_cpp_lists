@@ -130,23 +130,23 @@ int main() {
 
     // ____________ LIST 8 ____________
 
-    std::vector<std::shared_ptr<cpplab::FuelTank>> tanks;
+    // std::vector<std::shared_ptr<cpplab::FuelTank>> tanks;
 
-    for (int i = 0; i < 10; ++i) {
-        tanks.push_back(std::make_shared<cpplab::FuelTank>(10));
-    }
+    // for (int i = 0; i < 10; ++i) {
+    //     tanks.push_back(std::make_shared<cpplab::FuelTank>(10));
+    // }
 
-    cpplab::Engine engine1(2, 5);
-    cpplab::Engine engine2(1, 1);
-    cpplab::Engine engine3(3, 2);
+    // cpplab::Engine engine1(2, 5);
+    // cpplab::Engine engine2(1, 1);
+    // cpplab::Engine engine3(3, 2);
 
-    for (auto &tank : tanks) {
-        engine1.connectTank(tank);
-        engine2.connectTank(tank);
-        engine3.connectTank(tank);
-    }
+    // for (auto &tank : tanks) {
+    //     engine1.connectTank(tank);
+    //     engine2.connectTank(tank);
+    //     engine3.connectTank(tank);
+    // }
 
-    std::this_thread::sleep_for(std::chrono::seconds(10));
+    // std::this_thread::sleep_for(std::chrono::seconds(10));
 
     // cpplab::unique_ptr<int> p1(new int(33));
     // std::cout << *p1 << std::endl; // prints 33
@@ -156,6 +156,16 @@ int main() {
 
     // p1.reset(new int(15));
     // std::cout << *p1 << std::endl; // prints 15
+
+    int x = 100;
+    cpplab::non0_ptr<int> ptr1 {&x};
+    std::cout << *ptr1 << '\n';
+
+    try {
+        cpplab::non0_ptr<int> ptr2 {nullptr};
+    } catch (const std::runtime_error& e) {
+        std::cout << "Caught exception: " << e.what() << '\n';
+    }
 
     return 0;
 }
