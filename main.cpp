@@ -5,7 +5,6 @@
 #include <thread>
 
 #include "cpp_namespace.hpp"
-#include "vector.hpp"
 
 struct Pixel
 {
@@ -19,31 +18,6 @@ struct Pixel
     ~Pixel() = default;
 };
 
-
-auto ThreadGenerator(int& id) 
-{
-    std::cout << "Thread created with id " << id << '\n';
-    return id++;
-}
-
-auto ScalarProduct(std::vector<double>& v1, std::vector<double>& v2, std::promise<double> s_promise)
-{
-    double result = 0.0;
-
-    if ((v1.size() != v2.size()) || v1.empty() || v2.empty()) 
-    {
-        s_promise.set_exception(std::exception_ptr(std::make_exception_ptr(std::runtime_error("Invalid vector"))));
-    }
-    else
-    {
-        for (size_t i = 0; i < v1.size(); ++i)
-        {
-            result += v1[i] * v2[i];
-        }
-
-        s_promise.set_value(result);
-    }
-}
 
 
 int main() {
@@ -123,60 +97,65 @@ int main() {
 
     // temp_vector.emplace_back(2,3,4);
 
-
     // ____________ LIST 5 ____________
 
     // int threadId = 0;
 
-    // std::thread thread_obj(cpplab::printThread, "Here's text", ThreadGenerator(threadId));
-    // std::thread thread_obj2(cpplab::printThread, "Here's text 2", ThreadGenerator(threadId));
-    // std::thread thread_obj3(cpplab::printThread, "Here's text 34", ThreadGenerator(threadId));
+    // std::thread thread_obj(cpplab::printThread, "Here's text", cpplab::ThreadGenerator(threadId));
+    // std::thread thread_obj2(cpplab::printThread, "Here's text 2", cpplab::ThreadGenerator(threadId));
+    // std::thread thread_obj3(cpplab::printThread, "Here's text 34", cpplab::ThreadGenerator(threadId));
     
     // thread_obj.join();
     // thread_obj2.join();
     // thread_obj3.join();
 
-
-
-    // ____________ LIST 6 ____________
-
-    // std::vector<double> vec1 {1,2,3};
-    // std::vector<double> vec2 {4,5,6};
-
-    // std::vector<std::thread> thread_vec;
-
-    // double result_t = 0.0;
-
-    // for (size_t i = 0; i < 10; i++)
-    // {
-    //     std::promise<double> s_promise;
-    //     std::future<double> s_future = s_promise.get_future();
-
-    //     thread_vec.push_back( std::thread { &ScalarProduct, ref(vec1), ref(vec2), std::move(s_promise) } );
-
-    //     try
-    //     {
-    //         result_t += s_future.get();
-    //     }
-    //     catch(const std::exception& e)
-    //     {
-    //         std::cerr << e.what() << '\n';
-    //     }
-        
-    // }
-
-    // std::cout << result_t << '\n';
-
-    // for (auto& element : thread_vec)
-    // {
-    //     element.join();
-    // }
-
+    // cpplab::print_info(std::launch::async); 
+    // cpplab::print_info2(std::launch::deferred);
 
     // ____________ LIST 7 ____________
 
-    auto tp = cpplab::ThreadPool{3};
+    // cpplab::ThreadPool pool(5);
 
+    // for (int i = 0; i < 5; i++) {
+    //     pool.add_task([i] {
+    //         std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    //         std::cout << "Iteration nr. " << i << '\n';
+    //         return i;
+    //     });
+    // }
+
+    // pool.stop();
+    // std::cout << "Average value of the results: " << pool.average() << std::endl;
+
+
+    // ____________ LIST 8 ____________
+
+    std::vector<std::shared_ptr<cpplab::FuelTank>> tanks;
+
+    for (int i = 0; i < 10; ++i) {
+        tanks.push_back(std::make_shared<cpplab::FuelTank>(10));
+    }
+
+    cpplab::Engine engine1(2, 5);
+    cpplab::Engine engine2(1, 1);
+    cpplab::Engine engine3(3, 2);
+
+    for (auto &tank : tanks) {
+        engine1.connectTank(tank);
+        engine2.connectTank(tank);
+        engine3.connectTank(tank);
+    }
+
+    std::this_thread::sleep_for(std::chrono::seconds(10));
+
+    // cpplab::unique_ptr<int> p1(new int(33));
+    // std::cout << *p1 << std::endl; // prints 33
+
+    // cpplab::unique_ptr<int> p2 = p1.release();
+    // std::cout << *p2 << std::endl; // prints 33
+
+    // p1.reset(new int(15));
+    // std::cout << *p1 << std::endl; // prints 15
 
     return 0;
 }

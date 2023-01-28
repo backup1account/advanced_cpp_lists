@@ -19,8 +19,7 @@ class cpplab::vector {
     int index = -1;
 
     private:
-    value_type* allocate(size_t memory) 
-    {
+    value_type* allocate(size_t memory) {
         if (memory > max_size) {
             buffer = new value_type[max_size * 2];
         } else if (!buffer) {
@@ -32,8 +31,7 @@ class cpplab::vector {
     public:
     vector() noexcept = default;
 
-    vector(size_t size) 
-    {
+    vector(size_t size) {
         allocate(size);
 
         for (int i=0; i < size; ++i) {
@@ -41,8 +39,7 @@ class cpplab::vector {
         }
     }
 
-    vector(const vector& l_obj) 
-    {
+    vector(const vector& l_obj) {
         buffer = allocate(l_obj.max_size);
         index = l_obj.index;
         max_size = l_obj.max_size;
@@ -52,8 +49,7 @@ class cpplab::vector {
         }
     }
 
-    vector& operator=(const vector<T>& l_obj) 
-    {
+    vector& operator=(const vector<T>& l_obj) {
         if (&l_obj != this) {
             delete[] buffer;
             buffer = allocate(l_obj.max_size);
@@ -67,8 +63,7 @@ class cpplab::vector {
         return *this;
     }
 
-    vector(vector&& r_obj) noexcept 
-    {
+    vector(vector&& r_obj) noexcept {
         buffer = r_obj.buffer;
         index = r_obj.index;
         max_size = r_obj.max_size;
@@ -77,8 +72,7 @@ class cpplab::vector {
         r_obj.index = -1;
     }
 
-    vector& operator=(vector&& r_obj) noexcept 
-    {
+    vector& operator=(vector&& r_obj) noexcept {
         if (&r_obj != this) {
             delete[] buffer;
             
@@ -92,8 +86,7 @@ class cpplab::vector {
         return *this;
     }
 
-    ~vector() 
-    {
+    ~vector() {
         if (buffer) { 
             delete[] buffer;
             buffer = nullptr;
@@ -105,19 +98,16 @@ class cpplab::vector {
 
     int size() { return index+1; } // return number of elements in vector
     
-    value_type& operator[](const int& i) 
-    {
+    value_type& operator[](const int& i) {
         return buffer[i];
     }
 
-    friend std::ostream& operator<<(std::ostream& out, const vector& obj) 
-    {
+    friend std::ostream& operator<<(std::ostream& out, const vector& obj) {
         out << obj << std::endl;
         return out;
     }
 
-    void push(T value) 
-    {
+    void push(T value) {
         if (isFull()) {
             std::cout << "Buffer overflow. Element not added.\n";
         } else {
@@ -127,8 +117,7 @@ class cpplab::vector {
         }
     }
 
-    void pop() 
-    {
+    void pop() {
         if (isEmpty()) {
             std::cout << "Buffer underflow. Element not deleted.\n";
         } else {
@@ -146,8 +135,7 @@ class cpplab::vector {
     }
 
     template<typename... Args>
-    T& emplace_back(Args&&... args) 
-    {
+    T& emplace_back(Args&&... args) {
         if (index >= max_size) {
             allocate(index);
         }
@@ -160,9 +148,9 @@ class cpplab::vector {
 
 
 template<typename T, typename T2>
-auto operator*(cpplab::vector<T>& obj, T2& obj2) 
-{
+auto operator*(cpplab::vector<T>& obj, T2& obj2) {
     auto result = 0;
+
     try {
         if (obj.size() != obj2.size()) { throw "Vectors should have the same size."; }
 

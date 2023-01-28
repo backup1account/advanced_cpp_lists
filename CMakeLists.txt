@@ -8,7 +8,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 project(Advanced_cpp VERSION 0.1.0)
 
-file(GLOB CPP_FILES ${PROJECT_SOURCE_DIR}/*.cpp)
+file(GLOB CPP_FILES main.cpp thread_pool.cpp)
 include_directories(${PROJECT_SOURCE_DIR})
 
 include(CTest)

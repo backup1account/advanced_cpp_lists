@@ -1,69 +1,37 @@
-// #ifndef CPP_THREAD_POOL_HPP
-// #define CPP_THREAD_POOL_HPP
+#ifndef CPP_THREAD_POOL_HPP
+#define CPP_THREAD_POOL_HPP
 
-// #include <vector>
-// #include <thread>
-// #include <mutex>
-// #include <condition_variable>
-
-// namespace cpplab {
-//     class ThreadPool;
-// };
-
-// class cpplab::ThreadPool {
-//     private:
-//     using Task = std::function<double>;
-
-//     std::vector<std::thread> mThreads;
-//     std::vector<Task> mTasks;
-//     std::mutex mTasksMutex;
-//     std::condition_variable mTasksCV;
-
-//     bool mStopping = false;
-
-//     public:
-//     explicit ThreadPool(size_t thread_num) 
-//     {
-//         for (size_t i = 0; i < thread_num; ++i)
-//         {
-//             mThreads.emplace_back(
-//                 std::thread([this]()
-//                 {
-//                     std::unique_lock<std::mutex> lock{mTasksMutex};
-//                     mTasksCV.wait(lock, [=] { return mStopping || !mTasks.empty(); });
-
-//                     // if (mStopping) { break; }
-
-//                 })
-//             );
-//         }
-//     }
-
-//     ~ThreadPool()
-//     {
-//         stop();
-//     }
-
-//     void add_task(Task task)
-//     {
-
-//         mTasks.emplace_back(std::move(task));
-//     }
-
-//     double average()
-//     {
-
-//     }
-
-//     void stop()
-//     {
+#include <vector>
+#include <queue>
+#include <thread>
+#include <condition_variable>
+#include <mutex>
+#include <future>
 
 
-//         for(auto& t: mThreads)
-//         {
-//             t.join();
-//         }
-//     }
-// };
+namespace cpplab {
+    class ThreadPool;
+}
 
-// #endif
+class cpplab::ThreadPool {
+    private:
+    std::vector<std::thread> pool;
+    std::queue<std::function<double()>> tasks;
+    std::vector<double> results;
+    std::mutex queue_mutex;
+    std::condition_variable cv;
+    bool m_stop = false;
+
+    public:
+    explicit ThreadPool(int numThreads);
+
+    ~ThreadPool();
+
+    void add_task(std::function<double()> task);
+
+    double average();
+
+    void stop();
+};
+
+#endif
