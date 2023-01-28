@@ -70,6 +70,63 @@ namespace cpplab {
         // std::async(std::launch::async, printAsyncIn formation, launch_info);
     }
 
+    class ThreadPool {
+        private:
+        using Task = std::function<double>;
+
+        std::vector<std::thread> mThreads;
+        std::vector<Task> mTasks;
+        std::mutex mTasksMutex;
+        std::condition_variable mTasksCV;
+
+        bool mStopping = false;
+
+        public:
+        explicit ThreadPool(size_t thread_num) 
+        {
+            for (size_t i = 0; i < thread_num; ++i)
+            {
+                mThreads.emplace_back(
+                    std::thread([this]()
+                    {
+                        std::unique_lock<std::mutex> lock{mTasksMutex};
+                        mTasksCV.wait(lock, [this] { return mStopping || !mTasks.empty(); });
+
+                        // if (mStopping) { break; }
+
+                    })
+                );
+            }
+        }
+        
+        ~ThreadPool()
+        {
+            stop();
+        }
+
+        // void add_task(Task task)
+        // {
+
+        //     mTasks.emplace_back(std::move(task));
+        // }
+
+        // double average()
+        // {
+
+        // }
+
+        void stop()
+        {
+
+
+            for(auto& t: mThreads)
+            {
+                t.join();
+            }
+        }
+
+    };
+
 }
 
 #endif
