@@ -137,38 +137,31 @@ int main() {
     std::vector<double> vec1 {1,2,3};
     std::vector<double> vec2 {4,5,6};
 
-    try {
-        std::vector<std::thread> thread_vec;
+    std::vector<std::thread> thread_vec;
 
-        double result_t = 0.0;
+    double result_t = 0.0;
 
-        for (size_t i = 0; i < 10; i++)
-        {
-            std::promise<double> s_promise;
-            std::future<double> s_future = s_promise.get_future();
+    for (size_t i = 0; i < 10; i++)
+    {
+        std::promise<double> s_promise;
+        std::future<double> s_future = s_promise.get_future();
 
-            thread_vec.push_back( std::thread { ScalarProduct, ref(vec1), ref(vec2), std::move(s_promise) } );
+        thread_vec.push_back( std::thread { ScalarProduct, ref(vec1), ref(vec2), std::move(s_promise) } );
 
-            try
-            {
-                result_t += s_future.get();
-            }
-            catch(const std::exception& e)
-            {
-                std::cerr << e.what() << '\n';
-            }
-            
+        try {
+            result_t += s_future.get();
         }
-
-        std::cout << result_t << '\n';
-
-        for (auto& element : thread_vec)
-        {
-            element.join();
+        catch(const std::exception& e) {
+            std::cerr << e.what() << '\n';
         }
-    } 
-    catch(std::exception& e) {
-        std::cout << e.what() << '\n';
+        
+    }
+
+    std::cout << result_t << '\n';
+
+    for (auto& element : thread_vec)
+    {
+        element.join();
     }
 
     // ____________ LIST 7 ____________
