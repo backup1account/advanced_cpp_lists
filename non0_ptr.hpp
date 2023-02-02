@@ -11,7 +11,7 @@ class cpplab::non0_ptr {
     public:
     explicit non0_ptr(T* ptr) : ptr_{ptr} {
         if (!ptr_) {
-        throw std::runtime_error("null pointer value");
+            throw std::runtime_error("null pointer value");
         }
     }
 

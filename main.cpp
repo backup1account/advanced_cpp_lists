@@ -18,6 +18,25 @@ struct Pixel
     ~Pixel() = default;
 };
 
+auto ScalarProduct(std::vector<double>& v1, std::vector<double>& v2, std::promise<double> s_promise)
+{
+    double result = 0.0;
+
+    if ((v1.size() != v2.size()) || v1.empty() || v2.empty()) 
+    {
+        s_promise.set_exception(std::exception_ptr(std::make_exception_ptr(std::runtime_error("Invalid vector"))));
+    }
+    else
+    {
+        for (size_t i = 0; i < v1.size(); ++i)
+        {
+            result += v1[i] * v2[i];
+        }
+
+        s_promise.set_value(result);
+    }
+}
+
 
 
 int main() {
@@ -112,6 +131,46 @@ int main() {
     // cpplab::print_info(std::launch::async); 
     // cpplab::print_info2(std::launch::deferred);
 
+
+    // ____________ LIST 6 ____________
+
+    std::vector<double> vec1 {1,2,3};
+    std::vector<double> vec2 {4,5,6};
+
+    try {
+        std::vector<std::thread> thread_vec;
+
+        double result_t = 0.0;
+
+        for (size_t i = 0; i < 10; i++)
+        {
+            std::promise<double> s_promise;
+            std::future<double> s_future = s_promise.get_future();
+
+            thread_vec.push_back( std::thread { ScalarProduct, ref(vec1), ref(vec2), std::move(s_promise) } );
+
+            try
+            {
+                result_t += s_future.get();
+            }
+            catch(const std::exception& e)
+            {
+                std::cerr << e.what() << '\n';
+            }
+            
+        }
+
+        std::cout << result_t << '\n';
+
+        for (auto& element : thread_vec)
+        {
+            element.join();
+        }
+    } 
+    catch(std::exception& e) {
+        std::cout << e.what() << '\n';
+    }
+
     // ____________ LIST 7 ____________
 
     // cpplab::ThreadPool pool(5);
@@ -157,15 +216,15 @@ int main() {
     // p1.reset(new int(15));
     // std::cout << *p1 << std::endl; // prints 15
 
-    int x = 100;
-    cpplab::non0_ptr<int> ptr1 {&x};
-    std::cout << *ptr1 << '\n';
+    // int x = 100;
+    // cpplab::non0_ptr<int> ptr1 {&x};
+    // std::cout << *ptr1 << '\n';
 
-    try {
-        cpplab::non0_ptr<int> ptr2 {nullptr};
-    } catch (const std::runtime_error& e) {
-        std::cout << "Caught exception: " << e.what() << '\n';
-    }
+    // try {
+    //     cpplab::non0_ptr<int> ptr2 {nullptr};
+    // } catch (const std::runtime_error& e) {
+    //     std::cout << "Caught exception: " << e.what() << '\n';
+    // }
 
     return 0;
 }
